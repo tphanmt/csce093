@@ -93,15 +93,15 @@ public class Client
 	boolean processFireCmd( String [] s )
 	{
 		//s should be in format F row col
-		//int fireRow = s[1]; int fireCol = s[2];
-		
+		int fireRow = Integer.parseInt(s[1]); int fireCol = Integer.parseInt(s[2]);
+		this.targets.fireMissle( new Position(fireRow, fireCol) );
 		return true;
 	}
 	
 	//Send a message to the opponent
 	boolean processChatCmd( String s )
 	{
-		out.println(s);
+		out.println(s.substring(2));
 		return true;
 	}
 	
@@ -110,25 +110,73 @@ public class Client
 	public void initPlayer() throws IOException
 	{
 		//1.Get player name
+		out.println("This is BattleShip.\nPlease enter your name:");
+		Scanner newPlayer = new Scanner(in);
+		this.name = newPlayer.next();
+		newPlayer.close();
+		
 		//2.Print out instructions
 		
 //Here's some nice instructions to show a client		
-//		out.println("   You will now place 2 ships. You may choose between either a Cruiser (C) " );
-//		out.println("   and Destroyer (D)...");
-//		out.println("   Enter Ship info. An example input looks like:");
-//		out.println("\nD 2 4 S USS MyBoat\n");
-//		out.println("   The above line creates a Destroyer with the stern located at x=2 (col)," );
-//		out.println("   y=4 (row) and the front of the ship will point to the SOUTH (valid" );
-//		out.println("   headings are N, E, S, and W.\n\n" );
-//		out.println("   the name of the ship will be \"USS MyBoat\"");
-//		out.println("Enter Ship 1 information:" );
-//		out.flush();
+		out.println("   You will now place 2 ships. You may choose between either a Cruiser (C) " );
+		out.println("   and Destroyer (D)...");
+		out.println("   Enter Ship info. An example input looks like:");
+		out.println("\nD 2 4 S USS MyBoat\n");
+		out.println("   The above line creates a Destroyer with the stern located at x=2 (col)," );
+		out.println("   y=4 (row) and the front of the ship will point to the SOUTH (valid" );
+		out.println("   headings are N, E, S, and W.\n\n" );
+		out.println("   the name of the ship will be \"USS MyBoat\"");
+		//out.println("Enter Ship 1 information:" );
+		out.flush();
 		
 		//Get ship locations from the player for all 2 ships (or more than 2 if you're using more ships)
-		
+		for (int i = 0; i < 2; i++) {
+			out.println("Enter Ship " + i+1 + " information:");
+			Scanner s = new Scanner(in);
+			String[] newShip = s.next().split(" ");
+			
+			String shipName = "";
+			for (int j = 4; j < newShip.length; j++) {
+				shipName += " " + newShip[j];
+			}
+			
+			int xPos = Integer.parseInt(newShip[1]);
+			int yPos = Integer.parseInt(newShip[2]);
+			
+			//default heading is west
+			HEADING heading = HEADING.WEST;
+			if (newShip[3].equals("N")) {
+				heading = HEADING.NORTH;
+			} else if (newShip[3].equals("S")) {
+				heading = HEADING.SOUTH;
+			} else if (newShip[3].equals("E")) {
+				heading = HEADING.EAST;
+			}  else {
+				out.println("Improper heading input. Assumed to go WEST.");
+			}
+			
+			if (newShip[0].equals("D")) {
+				Ship ship = new Destroyer(shipName);
+				if( this.board.addShip(ship, new Position(xPos,yPos), heading) )
+					System.out.println( "Added " + ship.getName() + "Location is " + "(" + xPos + ", " + yPos + ")");
+				else
+					System.out.println( "Failed to add " + ship.getName() );
+				
+			} else if (newShip[0].equals("C")) {
+				Ship ship = new Cruiser(shipName);
+				if( this.board.addShip(ship, new Position(xPos,yPos), heading) )
+					System.out.println( "Added " + ship.getName() + "Location is " + "(" + xPos + ", " + yPos + ")");
+				else
+					System.out.println( "Failed to add " + ship.getName() );
+				
+			} else {
+				out.println("Ship of type " + newShip[0] + " does not exist.");
+			}
+			s.close();
+		}
 		
 		//After all game state is input, draw the game board to the client
-		
+		this.board.draw();
 		
 		System.out.println( "Waiting for other player to finish their setup, then war will ensue!" );
 	}

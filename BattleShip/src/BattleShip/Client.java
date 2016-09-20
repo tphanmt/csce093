@@ -40,23 +40,32 @@ public class Client
 			out.flush();
 			
 			//Perform test here to see if we have run or lost
+			
 		}
 	}
 	
 	//Returns a bool, true iff all of this client's ships are destroyed
 	boolean allMyShipsAreDestroyed()
 	{
-		ArrayList<ArrayList<Cell>> checkMe = this.board.cells;
-		System.out.println(checkMe);
-		return false;
+		System.out.println(this.board.myShips);
+		for (int i = 0; i < this.board.myShips.size(); i++) {
+			if (this.board.myShips.get(i).isAlive()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	//Returns a bool, true iff all of the opponent's ships are destroyed
 	boolean allEnemyShipsAreDestroyed()
 	{
-		ArrayList<ArrayList<Cell>> checkOpp = this.targets.cells;
-		System.out.println(checkOpp);
-		return false;
+		System.out.println(this.targets.myShips);
+		for (int i = 0; i < this.targets.myShips.size(); i++) {
+			if (this.targets.myShips.get(i).isAlive()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	//"F 2 4" = Fire command

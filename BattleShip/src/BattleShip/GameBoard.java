@@ -163,6 +163,9 @@ public class GameBoard
 			return null;
 		} else if (this.cells.get(coordinate.y).get(coordinate.x).getShip() != null) {
 			this.cells.get(coordinate.y).get(coordinate.x).hasBeenStruckByMissile(true);
+			System.out.println("HIT! (" + coordinate.x + ", " + coordinate.y + ")");
+		} else {
+			System.out.println("MISS :(");
 		}
 		return this.cells.get(coordinate.y).get(coordinate.x).getShip();
 		//even if missile hit nothing??

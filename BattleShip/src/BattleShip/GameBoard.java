@@ -69,11 +69,11 @@ public class GameBoard
 	{
 		
 		if (bowDirection == HEADING.WEST) {
-			int xBow = sternLocation.x - s.getLength();
+			int xBow = sternLocation.x - s.getLength() + 1; //if cruiser is 4, and position is (3,6)
 			if (xBow >= 0) { //fits on board?
 				ArrayList<Cell> newShipPos = new ArrayList<Cell>();
-				for (int i = xBow; i < sternLocation.x; i++) {
-					if (this.cells.get(sternLocation.y).get(i+1).getShip() == null) { //collides with other ship?
+				for (int i = xBow; i < sternLocation.x+1; i++) {
+					if (this.cells.get(sternLocation.y).get(i).getShip() == null) { //collides with other ship?
 						newShipPos.add(this.cells.get(sternLocation.y).get(i));
 						//this.cells.get(sternLocation.y).get(i).setShip(s);
 					} else {
@@ -81,8 +81,8 @@ public class GameBoard
 					}
 				}
 				//add ship
-				for (int i = xBow; i < sternLocation.x; i++) {
-					this.cells.get(sternLocation.y).get(i+1).setShip(s);
+				for (int i = xBow; i < sternLocation.x+1; i++) {
+					this.cells.get(sternLocation.y).get(i).setShip(s);
 				}
 				s.setPosition(newShipPos);
 				this.myShips.add(s);
@@ -109,20 +109,20 @@ public class GameBoard
 				return true;
 			}
 		} else if (bowDirection == HEADING.NORTH) {
-			int yBow = sternLocation.y - s.getLength();
+			int yBow = sternLocation.y - s.getLength() + 1;
 			if (yBow >= 0) {
 				ArrayList<Cell> newShipPos = new ArrayList<Cell>();
-				for (int i = yBow; i < sternLocation.y; i++) {
+				for (int i = yBow; i < sternLocation.y+1; i++) {
 					if (this.cells.get(i).get(sternLocation.x).getShip() == null) { //collides with other ship?
-						newShipPos.add(this.cells.get(i+1).get(sternLocation.x));
+						newShipPos.add(this.cells.get(i).get(sternLocation.x));
 						//this.cells.get(sternLocation.y).get(i).setShip(s);
 					} else {
 						return false;
 					}
 				}
 				//add ship
-				for (int i = yBow; i < sternLocation.y; i++) {
-					this.cells.get(i+1).get(sternLocation.x).setShip(s);
+				for (int i = yBow; i < sternLocation.y+1; i++) {
+					this.cells.get(i).get(sternLocation.x).setShip(s);
 				}
 				s.setPosition(newShipPos);
 				this.myShips.add(s);
@@ -159,10 +159,13 @@ public class GameBoard
 	public Ship fireMissle( Position coordinate )
 	{
 		if (coordinate.x > colCount || coordinate.y > rowCount) {
-			System.out.println("Keep it in the grid!");
+			System.out.println("Keep it in the grid! No ship hit.");
+			return null;
+		} else if (this.cells.get(coordinate.y).get(coordinate.x).getShip() != null) {
+			this.cells.get(coordinate.y).get(coordinate.x).hasBeenStruckByMissile(true);
 		}
-		return this.cells.get(coordinate.x).get(coordinate.y).getShip();
-		
+		return this.cells.get(coordinate.y).get(coordinate.x).getShip();
+		//even if missile hit nothing??
 	}
 	
 	//Here's a simple driver that should work without touching any of the code below this point

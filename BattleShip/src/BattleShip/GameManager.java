@@ -23,6 +23,7 @@ public class GameManager
 	//so a client is able to use this method to get a reference to his opponent
 	public Client getOpponent( Client me )
 	{
+		
 	}
 	
 	//In a asychronous nature, begin playing the game. This should only occur after 

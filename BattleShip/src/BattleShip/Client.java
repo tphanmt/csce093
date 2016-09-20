@@ -46,12 +46,17 @@ public class Client
 	//Returns a bool, true iff all of this client's ships are destroyed
 	boolean allMyShipsAreDestroyed()
 	{
-		
+		ArrayList<ArrayList<Cell>> checkMe = this.board.cells;
+		System.out.println(checkMe);
+		return false;
 	}
 
 	//Returns a bool, true iff all of the opponent's ships are destroyed
 	boolean allEnemyShipsAreDestroyed()
 	{
+		ArrayList<ArrayList<Cell>> checkOpp = this.targets.cells;
+		System.out.println(checkOpp);
+		return false;
 	}
 
 	//"F 2 4" = Fire command
@@ -79,7 +84,7 @@ public class Client
 	boolean processFireCmd( String [] s )
 	{
 		//s should be in format F row col
-		int fireRow = s[1]; int fireCol = s[2];
+		//int fireRow = s[1]; int fireCol = s[2];
 		
 		return true;
 	}

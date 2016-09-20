@@ -18,7 +18,7 @@ public class GameBoard
 		this.colCount = colCount;
 		
 		//create the 2D array of cells
-		ArrayList<Cell> newRow = new ArrayList<Cell>();
+		/* ArrayList<Cell> newRow = new ArrayList<Cell>();
 		for (int j = 0; j < colCount; j++) { //create arraylist row with cells # equal to columns
 			newRow.add(new Cell()); 
 		}
@@ -26,18 +26,29 @@ public class GameBoard
 		for (int i = 0; i < rowCount; i++) { //populate 2d array of cells with rows
 			this.cells.add(newRow);
 		}
+		*/
+		
+		
+		this.cells = new ArrayList<ArrayList<Cell>>();
+		for (int i = 0; i < rowCount; i++) { //populate 2d array of cells with rows
+			ArrayList<Cell> newRow = new ArrayList<Cell>();
+			for (int j = 0; j < colCount; j++) {
+				newRow.add(new Cell());
+			}
+			this.cells.add(newRow);
+		}
 	}
 	
 	public String draw()
 	{
-		for (int i=0; i<rowCount; i++) {
+		for (int i=0; i<rowCount+2; i++) {
 			StringBuilder sb = new StringBuilder(colCount+2);
 			sb.append("|");
 			for (int j = 0; j<colCount; j++) {
-				if (i == 0 || i == rowCount-1) { //top and bottom edges of board
+				if (i == 0 || i == rowCount+1) { //top and bottom edges of board
 					sb.append("-"); 
 				} else { //actual playing area
-					sb.append(this.cells.get(i).get(j).draw());
+					sb.append(this.cells.get(i-1).get(j).draw());
 				}
 			}
 			sb.append("|");
@@ -59,40 +70,82 @@ public class GameBoard
 		
 		if (bowDirection == HEADING.WEST) {
 			int xBow = sternLocation.x - s.getLength();
-			if (xBow >= 0) {
-				//add ship
+			if (xBow >= 0) { //fits on board?
 				ArrayList<Cell> newShipPos = new ArrayList<Cell>();
 				for (int i = xBow; i < sternLocation.x; i++) {
-					newShipPos.add(this.cells.get(xBow).get(sternLocation.y));
-					this.cells.get(xBow).get(sternLocation.y).setShip(s);
-					
-					//also need to check it doesn't collide with another ship
+					if (this.cells.get(sternLocation.y).get(i+1).getShip() == null) { //collides with other ship?
+						newShipPos.add(this.cells.get(sternLocation.y).get(i));
+						//this.cells.get(sternLocation.y).get(i).setShip(s);
+					} else {
+						return false;
+					}
+				}
+				//add ship
+				for (int i = xBow; i < sternLocation.x; i++) {
+					this.cells.get(sternLocation.y).get(i+1).setShip(s);
 				}
 				s.setPosition(newShipPos);
+				this.myShips.add(s);
 				return true;
 			}
 		} else if (bowDirection == HEADING.EAST) {
 			int xBow = sternLocation.x + s.getLength();
 			if (xBow <= colCount) {
+				ArrayList<Cell> newShipPos = new ArrayList<Cell>();
+				for (int i = sternLocation.x; i < xBow; i++) {
+					if (this.cells.get(sternLocation.y).get(i).getShip() == null) { //collides with other ship?
+						newShipPos.add(this.cells.get(sternLocation.y).get(i));
+						//this.cells.get(sternLocation.y).get(i).setShip(s);
+					} else {
+						return false;
+					}
+				}
 				//add ship
 				for (int i = sternLocation.x; i < xBow; i++) {
-					
+					this.cells.get(sternLocation.y).get(i).setShip(s);
 				}
+				s.setPosition(newShipPos);
+				this.myShips.add(s);
 				return true;
 			}
 		} else if (bowDirection == HEADING.NORTH) {
 			int yBow = sternLocation.y - s.getLength();
 			if (yBow >= 0) {
+				ArrayList<Cell> newShipPos = new ArrayList<Cell>();
+				for (int i = yBow; i < sternLocation.y; i++) {
+					if (this.cells.get(i).get(sternLocation.x).getShip() == null) { //collides with other ship?
+						newShipPos.add(this.cells.get(i+1).get(sternLocation.x));
+						//this.cells.get(sternLocation.y).get(i).setShip(s);
+					} else {
+						return false;
+					}
+				}
 				//add ship
+				for (int i = yBow; i < sternLocation.y; i++) {
+					this.cells.get(i+1).get(sternLocation.x).setShip(s);
+				}
+				s.setPosition(newShipPos);
+				this.myShips.add(s);
 				return true;
 			}
 		} else {
 			int yBow = sternLocation.y + s.getLength();
 			if (yBow <= rowCount) {
-				//add ship
-				for (int i = sternLocation.x; i < yBow; i++) {
-					
+				ArrayList<Cell> newShipPos = new ArrayList<Cell>();
+				for (int i = sternLocation.y; i < yBow; i++) {
+					if (this.cells.get(i).get(sternLocation.x).getShip() == null) { //collides with other ship?
+						newShipPos.add(this.cells.get(i).get(sternLocation.x));
+						//this.cells.get(sternLocation.y).get(i).setShip(s);
+					} else {
+						return false;
+					}
 				}
+				//add ship
+				for (int i = sternLocation.y; i < yBow; i++) {
+					this.cells.get(i).get(sternLocation.x).setShip(s);
+				}
+				s.setPosition(newShipPos);
+				this.myShips.add(s);
 				return true;
 			}
 		}

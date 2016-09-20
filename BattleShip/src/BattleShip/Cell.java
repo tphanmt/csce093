@@ -11,9 +11,9 @@ public class Cell
 	
 	public boolean hasBeenStruckByMissile()
 	{
-		if (this.ship.isAlive()) {
+		/*if (this.ship.isAlive()) { //is this necessary?
 			this.struckByMissile = true;
-		} 
+		} */
 		return this.struckByMissile;
 	}
 	

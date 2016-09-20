@@ -16,5 +16,5 @@ public class Destroyer extends Ship {
 		}
 	}
 	
-	public int getLength()  {return 4;}
+	public int getLength()  {return 2;}
 }

@@ -15,7 +15,7 @@ public class GameManager
 	private ServerSocket listener = null;
 	
 	public GameManager()
-	{		
+	{
 	}
 	
 	//Returns a client reference to the opponent. This way, we can inspect attributes

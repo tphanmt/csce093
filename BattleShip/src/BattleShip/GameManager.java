@@ -21,7 +21,7 @@ public class GameManager
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
-			System.exit(1);
+			//System.exit(1);
 		} 
 	}
 	
@@ -57,30 +57,45 @@ public class GameManager
 	//Don't forget about try/finally blocks, if needed
 	boolean waitFor2PlayersToConnect() throws IOException
 	{
-		boolean done = false;
+		boolean connected = false;
 		      
 		for ( int i = 0; i < 2; i++ ) {
+			//Socket connection = new Socket("127.0.0.1", 10000 );
+			Socket socket = listener.accept();
 			try {
-				//Socket connection = new Socket("127.0.0.1", 10000 );
-				Socket socket = listener.accept();
+				
 				BufferedReader input = new BufferedReader(
 						new InputStreamReader(socket.getInputStream() ) );
-		        PrintWriter output = new PrintWriter(socket.getOutputStream() );
+		        PrintWriter output = new PrintWriter(socket.getOutputStream(), true );
 				this.clients.add(new Client(input, output, this));
 		    }
 			catch( IOException e ) {
 				e.printStackTrace();
-		        System.exit( 1 );
+		        //System.exit( 1 );
 		    }
 		}
-		done = true;
-		return done;
+		connected = true;
+		return connected;
 	}
 	
 	//let players initialize their name, and gameboard here. This should be done asynchronously
 	void initPlayers() throws IOException
 	{
+		clients.parallelStream().forEach( client -> 
+		{
+			try{ client.initPlayer(); }
+			catch( IOException e ) { e.printStackTrace(); } 
+		} );
 		
+		/*try {
+			this.clients.get(0).initPlayer();
+			this.clients.get(1).initPlayer();
+		} catch (IOException e ){
+			e.printStackTrace();
+			//System.exit(1);
+		}
+		System.out.println("You fail.");
+		*/
 	}
 	
 	

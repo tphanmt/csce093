@@ -54,7 +54,7 @@ public class Client
 	//Returns a bool, true iff all of this client's ships are destroyed
 	boolean allMyShipsAreDestroyed()
 	{
-		System.out.println(this.board.myShips);
+		//out.println(this.board.myShips);
 		for (int i = 0; i < this.board.myShips.size(); i++) {
 			if (this.board.myShips.get(i).isAlive()) {
 				return false;
@@ -66,7 +66,7 @@ public class Client
 	//Returns a bool, true iff all of the opponent's ships are destroyed
 	boolean allEnemyShipsAreDestroyed()
 	{
-		System.out.println(this.targets.myShips);
+		//out.println(this.targets.myShips);
 		for (int i = 0; i < this.targets.myShips.size(); i++) {
 			if (this.targets.myShips.get(i).isAlive()) {
 				return false;
@@ -115,13 +115,18 @@ public class Client
 	
 	GameBoard getGameBoard() { return this.board; }
 	
-	public void initPlayer() throws IOException
+	public void initPlayer() throws IOException 
 	{
 		//1.Get player name
-		out.println("This is BattleShip.\nPlease enter your name:");
-		Scanner newPlayer = new Scanner(in);
-		this.name = newPlayer.next();
-		newPlayer.close();
+		out.println("Welcome to BattleShip.\nPlease enter your name:");
+		Scanner s = new Scanner(in);
+		//try {
+		this.name = s.next();
+		//}
+		//catch (NoSuchElementException e) {
+		//	System.out.println(e.getMessage());
+		//}
+		//newPlayer.close();
 		
 		//2.Print out instructions
 		
@@ -140,8 +145,9 @@ public class Client
 		//Get ship locations from the player for all 2 ships (or more than 2 if you're using more ships)
 		for (int i = 0; i < 2; i++) {
 			out.println("Enter Ship " + i+1 + " information:");
-			Scanner s = new Scanner(in);
+			//Scanner s = new Scanner(in);
 			String[] newShip = s.next().split(" ");
+			out.println(newShip);
 			
 			String shipName = "";
 			for (int j = 4; j < newShip.length; j++) {
@@ -159,41 +165,44 @@ public class Client
 				heading = HEADING.SOUTH;
 			} else if (newShip[3].equals("E")) {
 				heading = HEADING.EAST;
-			}  else {
+			} else if (newShip[3].equals("W")) {
+			} else {
 				out.println("Improper heading input. Assumed to go WEST.");
 			}
 			
 			if (newShip[0].equals("D")) {
 				Ship ship = new Destroyer(shipName);
 				if( this.board.addShip(ship, new Position(xPos,yPos), heading) )
-					System.out.println( "Added " + ship.getName() + "Location is " + "(" + xPos + ", " + yPos + ")");
+					out.println( "Added " + ship.getName() + "Location is " + "(" + xPos + ", " + yPos + ")");
 				else
-					System.out.println( "Failed to add " + ship.getName() );
+					out.println( "Failed to add " + ship.getName() );
 				
 			} else if (newShip[0].equals("C")) {
 				Ship ship = new Cruiser(shipName);
 				if( this.board.addShip(ship, new Position(xPos,yPos), heading) )
-					System.out.println( "Added " + ship.getName() + "Location is " + "(" + xPos + ", " + yPos + ")");
+					out.println( "Added " + ship.getName() + "Location is " + "(" + xPos + ", " + yPos + ")");
 				else
-					System.out.println( "Failed to add " + ship.getName() );
+					out.println( "Failed to add " + ship.getName() );
 				
 			} else {
 				out.println("Ship of type " + newShip[0] + " does not exist.");
 			}
-			s.close();
+			
 		}
+	
 		
 		//After all game state is input, draw the game board to the client
 		this.board.draw();
 		
 		System.out.println( "Waiting for other player to finish their setup, then war will ensue!" );
+		s.close();
 	}
 	
 	String getName() { return this.name; }
 	
 	public static void main( String [] args )
 	{
-		
+			
 		
 	}
 }

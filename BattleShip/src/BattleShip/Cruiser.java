@@ -16,5 +16,5 @@ public class Cruiser extends Ship {
 		}
 	}
 	
-	public int getLength()  {return 3;}
+	public int getLength()  {return 4;} //typically 3
 }

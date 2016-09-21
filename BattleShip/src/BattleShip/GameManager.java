@@ -16,6 +16,13 @@ public class GameManager
 	
 	public GameManager()
 	{
+		try {
+			this.listener = new ServerSocket(10000, 2);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		} 
 	}
 	
 	//Returns a client reference to the opponent. This way, we can inspect attributes
@@ -23,7 +30,11 @@ public class GameManager
 	//so a client is able to use this method to get a reference to his opponent
 	public Client getOpponent( Client me )
 	{
-		
+		if (me == this.clients.get(0)) {
+			return this.clients.get(1);
+		} else {
+			return this.clients.get(0);
+		}
 	}
 	
 	//In a asychronous nature, begin playing the game. This should only occur after 
@@ -46,11 +57,30 @@ public class GameManager
 	//Don't forget about try/finally blocks, if needed
 	boolean waitFor2PlayersToConnect() throws IOException
 	{
+		boolean done = false;
+		      
+		for ( int i = 0; i < 2; i++ ) {
+			try {
+				//Socket connection = new Socket("127.0.0.1", 10000 );
+				Socket socket = listener.accept();
+				BufferedReader input = new BufferedReader(
+						new InputStreamReader(socket.getInputStream() ) );
+		        PrintWriter output = new PrintWriter(socket.getOutputStream() );
+				this.clients.add(new Client(input, output, this));
+		    }
+			catch( IOException e ) {
+				e.printStackTrace();
+		        System.exit( 1 );
+		    }
+		}
+		done = true;
+		return done;
 	}
 	
 	//let players initialize their name, and gameboard here. This should be done asynchronously
 	void initPlayers() throws IOException
 	{
+		
 	}
 	
 	

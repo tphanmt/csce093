@@ -39,9 +39,16 @@ public class Client
 			out.println( "   Waiting for Next Command...\n\n" );
 			out.flush();
 			
-			//Perform test here to see if we have run or lost
-			
+			//Perform test here to see if we have won or lost
+			if (this.allMyShipsAreDestroyed()) {
+				out.println("Enemy has sunk all your ships. :( You lose.");
+				break;
+			} else if (this.allEnemyShipsAreDestroyed()) {
+				out.println("You destroyed all enemy ships! :D You win.");
+				break;
+			}
 		}
+		out.println("Exiting game.");
 	}
 	
 	//Returns a bool, true iff all of this client's ships are destroyed
@@ -93,7 +100,8 @@ public class Client
 	boolean processFireCmd( String [] s )
 	{
 		//s should be in format F row col
-		int fireRow = Integer.parseInt(s[1]); int fireCol = Integer.parseInt(s[2]);
+		int fireRow = Integer.parseInt(s[1]); 
+		int fireCol = Integer.parseInt(s[2]);
 		this.targets.fireMissle( new Position(fireRow, fireCol) );
 		return true;
 	}

@@ -29,6 +29,8 @@ public class GameBoard
 	
 	public String draw()
 	{
+		//StringBuilder drawBoard = new StringBuilder();
+		String drawBoard = LINE_END;
 		for (int i=0; i<rowCount+2; i++) {
 			StringBuilder sb = new StringBuilder(colCount+2);
 			sb.append("|");
@@ -40,10 +42,11 @@ public class GameBoard
 				}
 			}
 			sb.append("|");
-			System.out.println(sb);
+			sb.append(LINE_END);
+			//sbBoard.append(sb);
+			drawBoard += sb.toString();
 		}
-		String x = "GameBoard completed.";
-		return x;
+		return drawBoard;
 
 		//draw the entire board... I'd use a StringBuilder object to improve speed
 		//remember - you must draw one entire row at a time, and don't forget the

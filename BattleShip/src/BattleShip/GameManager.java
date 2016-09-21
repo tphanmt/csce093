@@ -86,16 +86,7 @@ public class GameManager
 			try{ client.initPlayer(); }
 			catch( IOException e ) { e.printStackTrace(); } 
 		} );
-		
-		/*try {
-			this.clients.get(0).initPlayer();
-			this.clients.get(1).initPlayer();
-		} catch (IOException e ){
-			e.printStackTrace();
-			//System.exit(1);
-		}
-		System.out.println("You fail.");
-		*/
+	
 	}
 	
 	

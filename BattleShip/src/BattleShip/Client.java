@@ -92,7 +92,7 @@ public class Client
 			getGameBoard().draw();
 		else
 			out.println("Invalid command");
-		s.close();
+		
 		return true;
 	}
 	
@@ -139,7 +139,9 @@ public class Client
 		out.flush();
 		
 		//Get ship locations from the player for all 2 ships (or more than 2 if you're using more ships)
-		for (int i = 0; i < 2; i++) {
+		//for (int i = 0; i < 2; i++) { //change to while loop checking 2 ships exist
+		int i = 0;
+		while(this.board.myShips.size() <2) {	
 			out.println("Enter Ship " + (i+1) + " information:");
 			//Scanner s = new Scanner(in);
 			String[] newShip = s.nextLine().split(" ");
@@ -167,15 +169,19 @@ public class Client
 			
 			if (newShip[0].equals("D")) {
 				Ship ship = new Destroyer(shipName);
-				if( this.board.addShip(ship, new Position(xPos,yPos), heading) )
-					out.println( "Added " + ship.getName() + "Location is " + "(" + xPos + ", " + yPos + ")");
+				if( this.board.addShip(ship, new Position(xPos,yPos), heading) ) {
+					out.println( "Added " + ship.getName() + ". Location is " + "(" + xPos + ", " + yPos + ")");
+					i++;
+				}					
 				else
 					out.println( "Failed to add " + ship.getName() );
 				
 			} else if (newShip[0].equals("C")) {
 				Ship ship = new Cruiser(shipName);
-				if( this.board.addShip(ship, new Position(xPos,yPos), heading) )
-					out.println( "Added " + ship.getName() + "Location is " + "(" + xPos + ", " + yPos + ")");
+				if( this.board.addShip(ship, new Position(xPos,yPos), heading) ) {
+					out.println( "Added " + ship.getName() + ". Location is " + "(" + xPos + ", " + yPos + ")");
+					i++;
+				}
 				else
 					out.println( "Failed to add " + ship.getName() );
 				
@@ -187,7 +193,7 @@ public class Client
 	
 		
 		//After all game state is input, draw the game board to the client
-		out.println(this.board.draw());
+		this.board.draw();
 		
 		out.println( "Waiting for other player to finish their setup, then war will ensue!" );
 	}

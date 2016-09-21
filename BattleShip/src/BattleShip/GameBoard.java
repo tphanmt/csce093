@@ -17,18 +17,6 @@ public class GameBoard
 		this.rowCount = rowCount;
 		this.colCount = colCount;
 		
-		//create the 2D array of cells
-		/* ArrayList<Cell> newRow = new ArrayList<Cell>();
-		for (int j = 0; j < colCount; j++) { //create arraylist row with cells # equal to columns
-			newRow.add(new Cell()); 
-		}
-		this.cells = new ArrayList<ArrayList<Cell>>();
-		for (int i = 0; i < rowCount; i++) { //populate 2d array of cells with rows
-			this.cells.add(newRow);
-		}
-		*/
-		
-		
 		this.cells = new ArrayList<ArrayList<Cell>>();
 		for (int i = 0; i < rowCount; i++) { //populate 2d array of cells with rows
 			ArrayList<Cell> newRow = new ArrayList<Cell>();

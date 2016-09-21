@@ -118,19 +118,15 @@ public class Client
 	public void initPlayer() throws IOException 
 	{
 		//1.Get player name
-		out.println("Welcome to BattleShip.\nPlease enter your name:");
+		out.println("Welcome to BattleShip.");
+		out.println("Please enter your name:");
 		Scanner s = new Scanner(in);
-		//try {
-		this.name = s.next();
-		//}
-		//catch (NoSuchElementException e) {
-		//	System.out.println(e.getMessage());
-		//}
-		//newPlayer.close();
+		this.name = s.nextLine();
 		
 		//2.Print out instructions
 		
-//Here's some nice instructions to show a client		
+//Here's some nice instructions to show a client	
+		out.println();
 		out.println("   You will now place 2 ships. You may choose between either a Cruiser (C) " );
 		out.println("   and Destroyer (D)...");
 		out.println("   Enter Ship info. An example input looks like:");
@@ -144,10 +140,9 @@ public class Client
 		
 		//Get ship locations from the player for all 2 ships (or more than 2 if you're using more ships)
 		for (int i = 0; i < 2; i++) {
-			out.println("Enter Ship " + i+1 + " information:");
+			out.println("Enter Ship " + (i+1) + " information:");
 			//Scanner s = new Scanner(in);
-			String[] newShip = s.next().split(" ");
-			out.println(newShip);
+			String[] newShip = s.nextLine().split(" ");
 			
 			String shipName = "";
 			for (int j = 4; j < newShip.length; j++) {
@@ -192,10 +187,9 @@ public class Client
 	
 		
 		//After all game state is input, draw the game board to the client
-		this.board.draw();
+		out.println(this.board.draw());
 		
-		System.out.println( "Waiting for other player to finish their setup, then war will ensue!" );
-		s.close();
+		out.println( "Waiting for other player to finish their setup, then war will ensue!" );
 	}
 	
 	String getName() { return this.name; }

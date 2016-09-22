@@ -16,13 +16,6 @@ public class GameManager
 	
 	public GameManager()
 	{
-		try {
-			this.listener = new ServerSocket(10000, 2);
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
-			//System.exit(1);
-		} 
 	}
 	
 	//Returns a client reference to the opponent. This way, we can inspect attributes
@@ -30,10 +23,10 @@ public class GameManager
 	//so a client is able to use this method to get a reference to his opponent
 	public Client getOpponent( Client me )
 	{
-		if (me == this.clients.get(0)) {
-			return this.clients.get(1);
-		} else {
+		if (me == this.clients.get(1)) {
 			return this.clients.get(0);
+		} else {
+			return this.clients.get(1);
 		}
 	}
 	
@@ -57,25 +50,28 @@ public class GameManager
 	//Don't forget about try/finally blocks, if needed
 	boolean waitFor2PlayersToConnect() throws IOException
 	{
-		boolean connected = false;
-		      
-		for ( int i = 0; i < 2; i++ ) {
+		try {
+			this.listener = new ServerSocket(10000, 2);
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}       
+		while (clients.size() < 2) {
 			//Socket connection = new Socket("127.0.0.1", 10000 );
 			Socket socket = listener.accept();
-			try {
-				
+			try {				
 				BufferedReader input = new BufferedReader(
 						new InputStreamReader(socket.getInputStream() ) );
 		        PrintWriter output = new PrintWriter(socket.getOutputStream(), true );
 				this.clients.add(new Client(input, output, this));
+				output.println("Welcome to BattleShip.");
+				output.println("Waiting for other player...");
 		    }
 			catch( IOException e ) {
 				e.printStackTrace();
-		        //System.exit( 1 );
 		    }
 		}
-		connected = true;
-		return connected;
+		return true;
 	}
 	
 	//let players initialize their name, and gameboard here. This should be done asynchronously
@@ -83,7 +79,9 @@ public class GameManager
 	{
 		clients.parallelStream().forEach( client -> 
 		{
-			try{ client.initPlayer(); }
+			try { 
+				client.initPlayer(); 
+			}
 			catch( IOException e ) { e.printStackTrace(); } 
 		} );
 	

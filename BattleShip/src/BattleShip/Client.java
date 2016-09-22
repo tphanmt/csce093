@@ -27,7 +27,7 @@ public class Client
 	public void playGame() throws IOException
 	{
 		this.out.println( NEWL + NEWL + "   Missiles Away! Game has begun" );
-		this.out.println( "   To Launch a missle at your enemy:" );
+		this.out.println( "   To Launch a Missile at your enemy:" );
 		this.out.println( "F 2 4" );
 		this.out.println( "Fires a missile at coordinate x=2, y=4." );
 		
@@ -67,8 +67,13 @@ public class Client
 	boolean allEnemyShipsAreDestroyed()
 	{
 		//out.println(this.targets.myShips);
-		for (int i = 0; i < this.targets.myShips.size(); i++) {
+		/*for (int i = 0; i < this.targets.myShips.size(); i++) {
 			if (this.targets.myShips.get(i).isAlive()) {
+				return false;
+			}
+		}*/
+		for (int i = 0; i < this.man.getOpponent(this).getGameBoard().myShips.size(); i++) {
+			if (this.man.getOpponent(this).getGameBoard().myShips.get(i).isAlive()) {
 				return false;
 			}
 		}
@@ -81,14 +86,14 @@ public class Client
 	boolean processCommand() throws IOException
 	{
 		Scanner s = new Scanner(in);
-		String cmd = s.next();
-		if (s.equals("F")) {
+		String cmd = s.nextLine();
+		if (cmd.substring(0,1).equals("F")) {
 			String [] Fcmd = cmd.split(" ");
 			processFireCmd(Fcmd);
 		}
-		else if (cmd.equals("C"))
+		else if (cmd.substring(0,1).equals("C"))
 			processChatCmd(cmd);
-		else if (cmd.equals("D"))
+		else if (cmd.substring(0,1).equals("D"))
 			getGameBoard().draw();
 		else
 			out.println("Invalid command");
@@ -96,20 +101,24 @@ public class Client
 		return true;
 	}
 	
-	//When a fire command is typed, this method parses the coordinates and launches a missle at the enemy
+	//When a fire command is typed, this method parses the coordinates and launches a Missile at the enemy
 	boolean processFireCmd( String [] s )
 	{
-		//s should be in format F row col
-		int fireRow = Integer.parseInt(s[1]); 
-		int fireCol = Integer.parseInt(s[2]);
-		this.targets.fireMissle( new Position(fireRow, fireCol) );
+		Position firePos = new Position(Integer.parseInt(s[1]), Integer.parseInt(s[2]));
+		Ship victimShip = this.man.getOpponent(this).getGameBoard().fireMissile(firePos );
+		if (victimShip == null) {
+			out.println("You missed.");
+		} else {
+			out.println("Enemy ship " + victimShip + " has been hit.");
+		}
+		this.targets.fireMissile(firePos);
 		return true;
 	}
 	
 	//Send a message to the opponent
 	boolean processChatCmd( String s )
 	{
-		out.println(s.substring(2));
+		this.man.getOpponent(this).out.println(s.substring(2));
 		return true;
 	}
 	
@@ -118,14 +127,12 @@ public class Client
 	public void initPlayer() throws IOException 
 	{
 		//1.Get player name
-		out.println("Welcome to BattleShip.");
 		out.println("Please enter your name:");
 		Scanner s = new Scanner(in);
 		this.name = s.nextLine();
 		
 		//2.Print out instructions
 		
-//Here's some nice instructions to show a client	
 		out.println();
 		out.println("   You will now place 2 ships. You may choose between either a Cruiser (C) " );
 		out.println("   and Destroyer (D)...");
@@ -143,16 +150,12 @@ public class Client
 		int i = 0;
 		while(this.board.myShips.size() <2) {	
 			out.println("Enter Ship " + (i+1) + " information:");
-			//Scanner s = new Scanner(in);
 			String[] newShip = s.nextLine().split(" ");
 			
 			String shipName = "";
 			for (int j = 4; j < newShip.length; j++) {
 				shipName += " " + newShip[j];
 			}
-			
-			int xPos = Integer.parseInt(newShip[1]);
-			int yPos = Integer.parseInt(newShip[2]);
 			
 			//default heading is west
 			HEADING heading = HEADING.WEST;
@@ -163,9 +166,13 @@ public class Client
 			} else if (newShip[3].equals("E")) {
 				heading = HEADING.EAST;
 			} else if (newShip[3].equals("W")) {
-			} else {
-				out.println("Improper heading input. Assumed to go WEST.");
+			} else { //need to make a better else case that allows reset
+				out.println("Improper heading input. Try again.");
+				continue;
 			}
+			
+			int xPos = Integer.parseInt(newShip[1]);
+			int yPos = Integer.parseInt(newShip[2]);
 			
 			if (newShip[0].equals("D")) {
 				Ship ship = new Destroyer(shipName);
@@ -191,11 +198,10 @@ public class Client
 			
 		}
 	
-		
 		//After all game state is input, draw the game board to the client
-		this.board.draw();
+		out.println(this.board.draw());
 		
-		out.println( "Waiting for other player to finish their setup, then war will ensue!" );
+		System.out.println( "Waiting for other player to finish their setup, then war will ensue!" );
 	}
 	
 	String getName() { return this.name; }
